@@ -15,13 +15,20 @@ export default function Nav() {
   const pathname = usePathname()
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border-subtle" style={{ background: 'rgba(8, 10, 16, 0.85)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}>
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="font-display text-lg font-semibold tracking-wider text-text-primary uppercase">
+    <nav
+      className="fixed top-0 left-0 right-0 z-50 border-b border-border-subtle animate-nav"
+      style={{
+        background: 'rgba(8, 10, 16, 0.8)',
+        backdropFilter: 'blur(24px) saturate(1.2)',
+        WebkitBackdropFilter: 'blur(24px) saturate(1.2)',
+      }}
+    >
+      <div className="max-w-6xl mx-auto px-6 h-10 flex items-center justify-between">
+        <Link href="/" className="font-display text-xs font-semibold tracking-[0.2em] text-text-primary uppercase">
           DR4FT
         </Link>
 
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-7">
           {NAV_ITEMS.map((item) => {
             const isActive = pathname === item.href
 
@@ -30,11 +37,12 @@ export default function Nav() {
                 key={item.href}
                 href={item.href}
                 className={`
-                  font-display text-xs tracking-[0.2em] uppercase transition-colors duration-200
+                  nav-link font-display text-[10px] tracking-[0.22em] uppercase transition-colors duration-300
                   ${isActive ? 'text-text-primary' : 'text-text-muted hover:text-text-secondary'}
                 `}
               >
                 {item.label}
+                {isActive && <span className="nav-dot" />}
               </Link>
             )
           })}

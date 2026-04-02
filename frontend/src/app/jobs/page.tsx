@@ -4,57 +4,47 @@ import { useState } from 'react'
 import GlassCard from '@/components/GlassCard'
 import PillButton from '@/components/PillButton'
 import MinimalInput from '@/components/MinimalInput'
-
-type JobResult = {
-  portal: string
-  title: string
-  company: string
-  location: string
-  link: string
-}
-
-const MOCK_JOBS: JobResult[] = [
-  { portal: 'LinkedIn', title: 'Senior Frontend Engineer', company: 'Stripe', location: 'San Francisco, CA', link: '#' },
-  { portal: 'Indeed', title: 'Fullstack Developer', company: 'Vercel', location: 'Remote', link: '#' },
-  { portal: 'Glassdoor', title: 'Software Engineer II', company: 'Datadog', location: 'New York, NY', link: '#' },
-  { portal: 'LinkedIn', title: 'React Developer', company: 'Notion', location: 'San Francisco, CA', link: '#' },
-  { portal: 'Indeed', title: 'Backend Engineer', company: 'Supabase', location: 'Remote', link: '#' },
-]
-
-const MOCK_TRENDING = [
-  'TypeScript', 'React', 'Next.js', 'AWS', 'Python',
-  'Kubernetes', 'GraphQL', 'Rust', 'Go', 'Terraform',
-]
+import { searchJobs, getMarketInsights, type JobResult } from '@/lib/api'
 
 export default function JobsPage() {
   const [query, setQuery] = useState('')
   const [location, setLocation] = useState('')
   const [searching, setSearching] = useState(false)
   const [jobs, setJobs] = useState<JobResult[]>([])
-  const [trendingSkills, setTrendingSkills] = useState<string[]>([])
+  const [insights, setInsights] = useState<Record<string, unknown> | null>(null)
   const [hasSearched, setHasSearched] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleSearch = async () => {
     if (!query) return
     setSearching(true)
-    // TODO: Replace with actual API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    setJobs(MOCK_JOBS)
-    setTrendingSkills(MOCK_TRENDING)
-    setHasSearched(true)
-    setSearching(false)
+    setError(null)
+
+    try {
+      const [jobResults, insightData] = await Promise.all([
+        searchJobs(query, location),
+        getMarketInsights().catch(() => null),
+      ])
+      setJobs(jobResults)
+      setInsights(insightData)
+      setHasSearched(true)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Search failed')
+    } finally {
+      setSearching(false)
+    }
   }
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
-      <div className="space-y-2">
+      <div className="space-y-2 stagger-1">
         <p className="label">Career Discovery</p>
         <h1 className="font-display text-3xl font-semibold tracking-wider text-text-primary uppercase">
           Job Search
         </h1>
       </div>
 
-      <GlassCard>
+      <GlassCard className="stagger-2">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <MinimalInput
             label="Keywords"
@@ -77,49 +67,56 @@ export default function JobsPage() {
         </div>
       </GlassCard>
 
+      {error && (
+        <GlassCard>
+          <p className="text-score-low text-sm font-body text-center">{error}</p>
+        </GlassCard>
+      )}
+
       {hasSearched && (
         <div className="space-y-5 animate-fade-up">
-          <p className="label">{jobs.length} results</p>
+          <p className="label">{jobs.length} portals found</p>
 
           {jobs.map((job, i) => (
-            <GlassCard key={i}>
-              <div className="flex items-start justify-between gap-4">
+            <GlassCard key={i} interactive>
+              <div className="flex items-center justify-between gap-4">
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-3">
-                    <span className="label px-2 py-0.5 rounded-full border border-border-subtle">
+                    <span
+                      className="font-display text-xs font-semibold tracking-[0.2em] uppercase"
+                      style={{ color: job.color }}
+                    >
                       {job.portal}
                     </span>
-                    <span className="font-display text-sm font-semibold tracking-wider text-text-primary uppercase">
-                      {job.title}
-                    </span>
                   </div>
-                  <p className="text-text-secondary text-sm font-body">{job.company}</p>
-                  <p className="text-text-muted text-xs font-body">{job.location}</p>
+                  <p className="text-text-secondary text-sm font-body">{job.title}</p>
                 </div>
                 <a
-                  href={job.link}
+                  href={job.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="pill-btn px-5 py-1.5 text-xs text-text-secondary shrink-0"
                 >
-                  Apply
+                  View Jobs
                 </a>
               </div>
             </GlassCard>
           ))}
 
-          <GlassCard title="Trending Skills">
-            <div className="flex flex-wrap gap-2">
-              {trendingSkills.map((skill) => (
-                <span
-                  key={skill}
-                  className="pill-btn px-4 py-1.5 text-xs text-text-muted hover:text-text-secondary transition-colors"
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </GlassCard>
+          {insights && (
+            <GlassCard title="Market Insights">
+              <div className="space-y-3">
+                {Object.entries(insights).map(([key, value]) => (
+                  <div key={key} className="flex justify-between py-2 border-b border-border-subtle last:border-0">
+                    <span className="label">{key.replace(/_/g, ' ')}</span>
+                    <span className="text-text-secondary text-sm font-body">
+                      {typeof value === 'object' ? JSON.stringify(value) : String(value)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </GlassCard>
+          )}
         </div>
       )}
 

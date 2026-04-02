@@ -11,13 +11,14 @@ const FEATURES = [
 
 const SOCIAL_LINKS = [
   { label: 'GitHub', href: 'https://github.com/Smokeybear10' },
-  { label: 'LinkedIn', href: '#' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/thomasou0/' },
+  { label: 'Website', href: 'https://thomasou.com' },
 ]
 
 export default function AboutPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-10">
-      <div className="space-y-2">
+      <div className="space-y-2 stagger-1">
         <p className="label">System Information</p>
         <h1 className="font-display text-3xl font-semibold tracking-wider text-text-primary uppercase">
           About
@@ -28,7 +29,7 @@ export default function AboutPage() {
       <GlassCard>
         <div className="space-y-3">
           <h2 className="font-display text-xl font-semibold tracking-wider text-text-primary uppercase">Thomas Ou</h2>
-          <p className="text-text-secondary text-sm font-body">Fullstack Engineer</p>
+          <p className="text-text-secondary text-sm font-body">Fullstack Engineer & Designer</p>
           <div className="flex gap-3 mt-4">
             {SOCIAL_LINKS.map((link) => (
               <a
@@ -90,11 +91,6 @@ export default function AboutPage() {
         </div>
       </GlassCard>
 
-      <div className="border-t border-border-subtle pt-4">
-        <p className="text-text-muted text-xs font-body">
-          Built by Thomas Ou, 2024
-        </p>
-      </div>
     </div>
   )
 }

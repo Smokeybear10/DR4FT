@@ -28,6 +28,39 @@ body {
   font-family: 'Barlow', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Noise grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* Ambient radial glow */
+body::after {
+  content: '';
+  position: fixed;
+  top: -20vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80vw;
+  height: 60vh;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(120, 130, 180, 0.04) 0%,
+    rgba(80, 90, 140, 0.02) 40%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* Custom scrollbar */
@@ -40,28 +73,28 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.06);
   border-radius: 100px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.06) transparent;
 }
 
 /* Selection */
 ::selection {
-  background: rgba(240, 240, 248, 0.12);
-  color: rgba(240, 240, 248, 0.9);
+  background: rgba(160, 170, 220, 0.15);
+  color: rgba(240, 240, 248, 0.95);
 }
 
 /* Placeholder */
 ::placeholder {
-  color: rgba(240, 240, 248, 0.2);
+  color: rgba(240, 240, 248, 0.15);
 }
 
 /* Focus ring reset */
@@ -71,37 +104,84 @@ select:focus {
   outline: none;
 }
 
-/* Glass card effect */
+/* ========================================
+   GLASS CARD
+   ======================================== */
+
 .glass {
-  background: rgba(12, 16, 26, 0.65);
+  position: relative;
+  background: rgba(12, 16, 26, 0.55);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 16px;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .glass:hover {
   border-color: rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.02),
+    0 8px 40px -12px rgba(0, 0, 0, 0.4);
 }
 
-/* Pill button */
+/* Gradient shimmer on hover */
+.glass-interactive {
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-interactive::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.glass-interactive:hover::before {
+  opacity: 1;
+}
+
+/* ========================================
+   PILL BUTTONS
+   ======================================== */
+
 .pill-btn {
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 100px;
   background: transparent;
   font-family: 'Oswald', sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 .pill-btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 0 20px -4px rgba(255, 255, 255, 0.06);
+}
+
+.pill-btn:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 .pill-btn:disabled {
-  opacity: 0.25;
+  opacity: 0.2;
   cursor: not-allowed;
 }
 
@@ -113,20 +193,28 @@ select:focus {
   font-family: 'Oswald', sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 .pill-btn-filled:hover:not(:disabled) {
-  background: transparent;
-  color: rgba(240, 240, 248, 0.85);
+  background: rgba(240, 240, 248, 0.95);
+  box-shadow: 0 0 30px -4px rgba(240, 240, 248, 0.15);
+  transform: translateY(-1px);
+}
+
+.pill-btn-filled:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
 }
 
 .pill-btn-filled:disabled {
-  opacity: 0.25;
+  opacity: 0.2;
   cursor: not-allowed;
 }
 
-/* Label style */
+/* ========================================
+   LABEL
+   ======================================== */
+
 .label {
   font-family: 'Oswald', sans-serif;
   font-size: 0.625rem;
@@ -135,35 +223,38 @@ select:focus {
   color: rgba(240, 240, 248, 0.25);
 }
 
-/* Minimal input */
+/* ========================================
+   INPUTS
+   ======================================== */
+
 .input-minimal {
   background: transparent;
   border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 0;
   color: rgba(240, 240, 248, 0.85);
   font-family: 'Barlow', sans-serif;
   font-size: 0.875rem;
-  padding: 8px 0;
+  padding: 10px 0;
   width: 100%;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.3s ease;
 }
 
 .input-minimal:focus {
-  border-color: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .input-minimal::placeholder {
-  color: rgba(240, 240, 248, 0.15);
+  color: rgba(240, 240, 248, 0.12);
 }
 
-/* Select styling */
 select.input-minimal {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(240,240,248,0.25)' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(240,240,248,0.2)' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0 center;
   padding-right: 20px;
+  cursor: pointer;
 }
 
 select.input-minimal option {
@@ -171,14 +262,36 @@ select.input-minimal option {
   color: rgba(240, 240, 248, 0.85);
 }
 
-/* Slide in */
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+
+/* Staggered fade up */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(16px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-up {
-  animation: fadeUp 0.4s ease-out forwards;
+  animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Hero-specific stagger */
+.stagger-1 { animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards; opacity: 0; }
+.stagger-2 { animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards; opacity: 0; }
+.stagger-3 { animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards; opacity: 0; }
+.stagger-4 { animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards; opacity: 0; }
+.stagger-5 { animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.65s forwards; opacity: 0; }
+.stagger-6 { animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards; opacity: 0; }
+
+/* Monogram float */
+@keyframes monogramFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-12px) scale(1.005); }
+}
+
+.animate-monogram {
+  animation: monogramFloat 8s ease-in-out infinite;
 }
 
 /* Score ring */
@@ -187,10 +300,50 @@ select.input-minimal option {
 }
 
 .animate-score {
-  animation: scoreIn 1s ease-out forwards;
+  animation: scoreIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Range slider */
+/* Subtle pulse for analyzing state */
+@keyframes analyzePulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.animate-pulse-subtle {
+  animation: analyzePulse 1.5s ease-in-out infinite;
+}
+
+/* Nav fade in */
+@keyframes navReveal {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-nav {
+  animation: navReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.05s forwards;
+  opacity: 0;
+}
+
+/* ========================================
+   SCORE GLOW
+   ======================================== */
+
+.score-glow-high {
+  filter: drop-shadow(0 0 8px rgba(74, 222, 128, 0.25));
+}
+
+.score-glow-mid {
+  filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.2));
+}
+
+.score-glow-low {
+  filter: drop-shadow(0 0 6px rgba(240, 240, 248, 0.08));
+}
+
+/* ========================================
+   RANGE SLIDER
+   ======================================== */
+
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
@@ -207,6 +360,7 @@ input[type="range"]::-webkit-slider-thumb {
   background: rgba(240, 240, 248, 0.85);
   border-radius: 50%;
   cursor: pointer;
+  box-shadow: 0 0 10px rgba(240, 240, 248, 0.15);
 }
 
 input[type="range"]::-moz-range-thumb {
@@ -216,4 +370,44 @@ input[type="range"]::-moz-range-thumb {
   border-radius: 50%;
   cursor: pointer;
   border: none;
+  box-shadow: 0 0 10px rgba(240, 240, 248, 0.15);
+}
+
+/* ========================================
+   NAV ACTIVE DOT
+   ======================================== */
+
+.nav-link {
+  position: relative;
+}
+
+.nav-dot {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(240, 240, 248, 0.85);
+  box-shadow: 0 0 6px rgba(240, 240, 248, 0.3);
+}
+
+/* ========================================
+   AMBIENT ORB (hero page)
+   ======================================== */
+
+.ambient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  opacity: 0.5;
+  animation: orbDrift 12s ease-in-out infinite;
+}
+
+@keyframes orbDrift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(15px, -10px) scale(1.05); }
+  66% { transform: translate(-10px, 8px) scale(0.95); }
 }

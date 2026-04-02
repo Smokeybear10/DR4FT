@@ -1,16 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import GlassCard from '@/components/GlassCard'
 import PillButton from '@/components/PillButton'
 import MinimalInput from '@/components/MinimalInput'
-
-const MOCK_STATS = {
-  average_rating: 4.2,
-  average_usability: 78,
-  average_satisfaction: 82,
-  total_responses: 156,
-}
+import { submitFeedback, getFeedbackStats, type FeedbackStats } from '@/lib/api'
 
 export default function FeedbackPage() {
   const [activeTab, setActiveTab] = useState<'submit' | 'stats'>('submit')
@@ -21,14 +15,40 @@ export default function FeedbackPage() {
   const [additional, setAdditional] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [stats, setStats] = useState<FeedbackStats | null>(null)
+  const [loadingStats, setLoadingStats] = useState(false)
+
+  useEffect(() => {
+    if (activeTab === 'stats') {
+      setLoadingStats(true)
+      getFeedbackStats()
+        .then(setStats)
+        .catch(() => setStats(null))
+        .finally(() => setLoadingStats(false))
+    }
+  }, [activeTab])
 
   const handleSubmit = async () => {
     if (rating === 0) return
     setSubmitting(true)
-    // TODO: Replace with actual API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    setSubmitted(true)
-    setSubmitting(false)
+    setError(null)
+
+    try {
+      await submitFeedback({
+        rating,
+        usability_score: usability,
+        feature_satisfaction: satisfaction,
+        missing_features: suggestions,
+        improvement_suggestions: suggestions,
+        user_experience: additional,
+      })
+      setSubmitted(true)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to submit feedback')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   const resetForm = () => {
@@ -38,11 +58,12 @@ export default function FeedbackPage() {
     setSuggestions('')
     setAdditional('')
     setSubmitted(false)
+    setError(null)
   }
 
   return (
     <div className="max-w-3xl mx-auto space-y-8">
-      <div className="space-y-2">
+      <div className="space-y-2 stagger-1">
         <p className="label">Help Us Improve</p>
         <h1 className="font-display text-3xl font-semibold tracking-wider text-text-primary uppercase">
           Feedback
@@ -151,6 +172,10 @@ export default function FeedbackPage() {
             />
           </GlassCard>
 
+          {error && (
+            <p className="text-score-low text-sm font-body text-center">{error}</p>
+          )}
+
           <PillButton onClick={handleSubmit} disabled={rating === 0 || submitting} variant="filled" fullWidth>
             {submitting ? 'Submitting...' : 'Submit Feedback'}
           </PillButton>
@@ -168,40 +193,50 @@ export default function FeedbackPage() {
       )}
 
       {activeTab === 'stats' && (
-        <div className="grid grid-cols-2 gap-5 animate-fade-up">
-          <GlassCard>
-            <div className="text-center space-y-2 py-4">
-              <span className="font-display text-4xl font-semibold text-text-primary">
-                {MOCK_STATS.average_rating.toFixed(1)}
-              </span>
-              <p className="label">Avg Rating</p>
-            </div>
-          </GlassCard>
-          <GlassCard>
-            <div className="text-center space-y-2 py-4">
-              <span className="font-display text-4xl font-semibold text-text-secondary">
-                {MOCK_STATS.total_responses}
-              </span>
-              <p className="label">Total Responses</p>
-            </div>
-          </GlassCard>
-          <GlassCard>
-            <div className="text-center space-y-2 py-4">
-              <span className="font-display text-4xl font-semibold text-text-secondary">
-                {MOCK_STATS.average_usability}%
-              </span>
-              <p className="label">Avg Usability</p>
-            </div>
-          </GlassCard>
-          <GlassCard>
-            <div className="text-center space-y-2 py-4">
-              <span className="font-display text-4xl font-semibold text-text-secondary">
-                {MOCK_STATS.average_satisfaction}%
-              </span>
-              <p className="label">Avg Satisfaction</p>
-            </div>
-          </GlassCard>
-        </div>
+        loadingStats ? (
+          <div className="text-center py-20">
+            <p className="text-text-muted text-sm font-body animate-pulse-subtle">Loading stats...</p>
+          </div>
+        ) : stats ? (
+          <div className="grid grid-cols-2 gap-5 animate-fade-up">
+            <GlassCard>
+              <div className="text-center space-y-2 py-4">
+                <span className="font-display text-4xl font-semibold text-text-primary">
+                  {stats.avg_rating.toFixed(1)}
+                </span>
+                <p className="label">Avg Rating</p>
+              </div>
+            </GlassCard>
+            <GlassCard>
+              <div className="text-center space-y-2 py-4">
+                <span className="font-display text-4xl font-semibold text-text-secondary">
+                  {stats.total_responses}
+                </span>
+                <p className="label">Total Responses</p>
+              </div>
+            </GlassCard>
+            <GlassCard>
+              <div className="text-center space-y-2 py-4">
+                <span className="font-display text-4xl font-semibold text-text-secondary">
+                  {Math.round(stats.avg_usability)}%
+                </span>
+                <p className="label">Avg Usability</p>
+              </div>
+            </GlassCard>
+            <GlassCard>
+              <div className="text-center space-y-2 py-4">
+                <span className="font-display text-4xl font-semibold text-text-secondary">
+                  {Math.round(stats.avg_satisfaction)}%
+                </span>
+                <p className="label">Avg Satisfaction</p>
+              </div>
+            </GlassCard>
+          </div>
+        ) : (
+          <div className="text-center py-20">
+            <p className="text-text-muted text-sm font-body">No feedback data available</p>
+          </div>
+        )
       )}
     </div>
   )

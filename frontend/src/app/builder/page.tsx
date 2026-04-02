@@ -106,7 +106,7 @@ export default function BuilderPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
-      <div className="space-y-2">
+      <div className="space-y-2 stagger-1">
         <p className="label">Construct Your Resume</p>
         <h1 className="font-display text-3xl font-semibold tracking-wider text-text-primary uppercase">
           Builder

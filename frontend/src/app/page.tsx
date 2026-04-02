@@ -1,36 +1,31 @@
 import Link from 'next/link'
 
-const FEATURES = [
-  {
-    title: 'Analyze',
-    description: 'AI-powered resume scoring against real ATS systems. Keyword matching, format checks, gap analysis.',
-    link: '/analyzer',
-  },
-  {
-    title: 'Build',
-    description: 'Construct ATS-optimized resumes with intelligent autofill and real-time scoring feedback.',
-    link: '/builder',
-  },
-  {
-    title: 'Discover',
-    description: 'Search jobs across portals, track trending skills, and monitor your performance over time.',
-    link: '/jobs',
-  },
-]
-
 export default function Home() {
   return (
-    <div className="relative min-h-[80vh] flex flex-col items-center justify-center text-center">
+    <div className="relative flex flex-col items-center justify-center text-center overflow-hidden -mt-20 -mb-20 h-screen">
+      {/* Ambient orbs */}
+      <div
+        className="ambient-orb"
+        style={{ width: 400, height: 400, top: '10%', left: '15%', background: 'rgba(100, 120, 200, 0.03)' }}
+        aria-hidden
+      />
+      <div
+        className="ambient-orb"
+        style={{ width: 300, height: 300, bottom: '20%', right: '10%', background: 'rgba(140, 100, 180, 0.025)', animationDelay: '-4s' }}
+        aria-hidden
+      />
+
       {/* Monogram */}
       <div
         className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
         aria-hidden
       >
         <span
-          className="font-display font-black leading-none"
+          className="font-display font-black leading-none animate-monogram"
           style={{
-            fontSize: 'clamp(200px, 30vw, 500px)',
-            color: 'rgba(240, 240, 248, 0.025)',
+            fontSize: 'clamp(220px, 32vw, 520px)',
+            color: 'transparent',
+            WebkitTextStroke: '1px rgba(240, 240, 248, 0.025)',
           }}
         >
           D4
@@ -38,40 +33,27 @@ export default function Home() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 space-y-8">
-        <div className="space-y-4">
-          <p className="label">AI Resume Optimizer</p>
-          <h1 className="font-display text-5xl md:text-7xl font-semibold tracking-wider text-text-primary uppercase">
+      <div className="relative z-10">
+        <div className="space-y-5">
+          <p className="label stagger-1">AI Resume Optimizer</p>
+          <h1 className="font-display text-7xl md:text-9xl font-bold tracking-[0.08em] text-text-primary uppercase stagger-2">
             DR4FT
           </h1>
-          <p className="text-text-secondary text-lg font-body max-w-lg mx-auto leading-relaxed">
-            Optimize your resume with AI analysis, ATS scoring, and actionable suggestions to land your next role.
+          <p className="text-text-secondary text-xl font-body max-w-sm mx-auto leading-relaxed stagger-3">
+            Beat the ATS. Land the interview.
           </p>
         </div>
 
-        <div className="flex items-center justify-center gap-4">
-          <Link href="/analyzer" className="pill-btn-filled px-10 py-3 text-sm font-medium tracking-wider inline-block">
+        <div className="flex items-center justify-center gap-4 mt-10 stagger-4">
+          <Link href="/analyzer" className="pill-btn-filled px-12 py-3.5 text-sm font-medium tracking-wider inline-block">
             Get Started
           </Link>
-          <Link href="/about" className="pill-btn px-10 py-3 text-sm text-text-secondary font-medium tracking-wider inline-block">
+          <Link href="/about" className="pill-btn px-12 py-3.5 text-sm text-text-secondary font-medium tracking-wider inline-block">
             Learn More
           </Link>
         </div>
       </div>
 
-      {/* Feature Cards */}
-      <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-5 mt-24 w-full">
-        {FEATURES.map((feature) => (
-          <Link key={feature.title} href={feature.link} className="glass p-8 group transition-all duration-300 hover:border-border-focus">
-            <h3 className="font-display text-sm font-semibold tracking-[0.2em] uppercase text-text-primary mb-3">
-              {feature.title}
-            </h3>
-            <p className="text-text-muted text-sm font-body leading-relaxed group-hover:text-text-secondary transition-colors">
-              {feature.description}
-            </p>
-          </Link>
-        ))}
-      </div>
     </div>
   )
 }
