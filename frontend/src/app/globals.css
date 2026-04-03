@@ -310,6 +310,18 @@ select.input-minimal option {
 .stagger-5 { animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.65s forwards; opacity: 0; }
 .stagger-6 { animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards; opacity: 0; }
 
+@media (prefers-reduced-motion: reduce) {
+  .stagger-1, .stagger-2, .stagger-3, .stagger-4, .stagger-5, .stagger-6,
+  .animate-fade-up, .animate-nav {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .animate-monogram { animation: none; }
+  .animate-score { animation: none; }
+  .ambient-orb { animation: none; }
+}
+
 /* Monogram float */
 @keyframes monogramFloat {
   0%, 100% { transform: translateY(0) scale(1); }
