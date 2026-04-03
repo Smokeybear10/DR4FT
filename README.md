@@ -19,7 +19,7 @@ GOOGLE_API_KEY=your_key_here
 ```
 
 ```bash
-cd backend && uvicorn main:app --reload
+cd backend && uvicorn main:app --reload --port 3200
 ```
 
 ### Frontend
@@ -27,7 +27,7 @@ cd backend && uvicorn main:app --reload
 cd frontend && npm install && npm run dev
 ```
 
-Open `http://localhost:3000`
+Open `http://localhost:2200`
 
 ## What It Does
 
@@ -62,12 +62,22 @@ DR4FT/
 │   ├── src/
 │   │   ├── app/
 │   │   │   ├── page.tsx              # Landing page
-│   │   │   ├── analyzer/page.tsx     # Resume analysis (standard + AI)
-│   │   │   ├── builder/page.tsx      # Resume builder form
-│   │   │   ├── jobs/page.tsx         # Multi-portal job search
-│   │   │   ├── feedback/page.tsx     # User feedback
-│   │   │   ├── about/page.tsx        # About + tech stack
-│   │   │   └── layout.tsx            # Root layout, fonts, nav
+│   │   │   ├── layout.tsx            # Root layout, fonts, nav, title template
+│   │   │   ├── analyzer/
+│   │   │   │   ├── page.tsx          # Resume analysis (standard + AI)
+│   │   │   │   └── layout.tsx        # DR4FT | Analyzer
+│   │   │   ├── builder/
+│   │   │   │   ├── page.tsx          # Resume builder form
+│   │   │   │   └── layout.tsx        # DR4FT | Builder
+│   │   │   ├── jobs/
+│   │   │   │   ├── page.tsx          # Multi-portal job search
+│   │   │   │   └── layout.tsx        # DR4FT | Job Search
+│   │   │   ├── feedback/
+│   │   │   │   ├── page.tsx          # User feedback
+│   │   │   │   └── layout.tsx        # DR4FT | Feedback
+│   │   │   └── about/
+│   │   │       ├── page.tsx          # About + tech stack
+│   │   │       └── layout.tsx        # DR4FT | About
 │   │   ├── components/
 │   │   │   ├── GlassCard.tsx         # Glassmorphism card primitive
 │   │   │   ├── PillButton.tsx        # Ghost/filled pill buttons
@@ -107,7 +117,7 @@ Ultra-dark glassmorphism with monochrome palette. No accent colors. Glass cards 
 
 ## API
 
-All endpoints prefixed with `/api`. Backend runs on port 8000, frontend on 3000.
+All endpoints prefixed with `/api`. Backend runs on port 3200, frontend on 2200.
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -118,6 +128,20 @@ All endpoints prefixed with `/api`. Backend runs on port 8000, frontend on 3000.
 | GET | `/api/jobs/insights` | Market trends and salary data |
 | POST | `/api/feedback` | Submit user feedback |
 | GET | `/api/dashboard/metrics` | Resume submission analytics |
+
+## Pre-Ship Checklist
+
+Run these audits in Claude Code before final deploy. Each one is a slash command.
+
+```
+/cso                    # Security audit -- secrets, deps, injection, auth
+/performance            # Load time, bundle size, rendering bottlenecks
+/core-web-vitals        # LCP, INP, CLS scoring and fixes
+/design-consultation    # Verify design system coherence against DESIGN.md
+/web-quality-audit      # Full sweep -- perf, a11y, SEO, best practices
+```
+
+Run order: `/cso` first (fix vulnerabilities before anything else), then `/performance` + `/core-web-vitals` (can run together), then `/design-consultation`, then `/web-quality-audit` as the final pass.
 
 ---
 

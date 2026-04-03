@@ -23,7 +23,10 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: 'DR4FT | AI Resume Optimizer',
+  title: {
+    template: 'DR4FT | %s',
+    default: 'DR4FT | AI Resume Optimizer',
+  },
   description: 'Beat the ATS and land the interview. DR4FT uses AI and NLP to analyze resumes against real ATS systems, identify gaps, and optimize for job seekers.',
   openGraph: {
     title: 'DR4FT | AI Resume Optimizer',
