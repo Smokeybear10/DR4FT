@@ -59,7 +59,7 @@ export default function BuilderPage() {
             <SectionHeader title="Template" />
             <div className="exam-form-body" style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {TEMPLATES.map((t) => (
-                <button key={t} onClick={() => setTemplate(t)} className={template === t ? 'btn-exam' : 'btn-exam-outline'} style={{ padding: '8px 16px', fontSize: 11 }}>{t}</button>
+                <button key={t} onClick={() => setTemplate(t)} className={template === t ? 'btn-exam' : 'btn-exam-outline'} style={{ padding: '12px 20px', fontSize: 11, minHeight: 44 }}>{t}</button>
               ))}
             </div>
           </div>

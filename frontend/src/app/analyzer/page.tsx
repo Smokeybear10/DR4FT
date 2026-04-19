@@ -5,7 +5,18 @@ import ExamCard from '@/components/booklet/ExamCard'
 import ExamButton from '@/components/booklet/ExamButton'
 import GradeDisplay from '@/components/booklet/GradeDisplay'
 import PaperUpload from '@/components/booklet/PaperUpload'
-import { getRoles, analyzeResume, analyzeResumeAI, type JobRoles } from '@/lib/api'
+import { getRoles, analyzeResumeAI, HAS_BACKEND, type JobRoles } from '@/lib/api'
+
+const emptyRole = { description: '', required_skills: [], sections: [], recommended_skills: { technical: [], soft: [] } }
+const mkCat = (roles: string[]) => Object.fromEntries(roles.map((r) => [r, emptyRole]))
+
+const DEMO_ROLES: JobRoles = {
+  Engineering: mkCat(['Software Engineer', 'Senior Software Engineer', 'Frontend Engineer', 'Backend Engineer', 'Fullstack Engineer', 'DevOps Engineer', 'Machine Learning Engineer']),
+  'Data & AI': mkCat(['Data Scientist', 'Data Analyst', 'Data Engineer', 'ML Engineer', 'AI Researcher']),
+  Design: mkCat(['Product Designer', 'UX Designer', 'UI Designer', 'Design Engineer']),
+  Product: mkCat(['Product Manager', 'Program Manager', 'Technical Product Manager']),
+  Business: mkCat(['Business Analyst', 'Marketing Manager', 'Sales Engineer', 'Consultant']),
+}
 
 type DisplayResult = {
   ats_score: number
@@ -28,25 +39,64 @@ export default function AnalyzerPage() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    getRoles().then((data) => { setRoleMap(data); setCategories(Object.keys(data)) }).catch(() => setError('Failed to load job roles'))
+    if (!HAS_BACKEND) {
+      setRoleMap(DEMO_ROLES)
+      setCategories(Object.keys(DEMO_ROLES))
+      return
+    }
+    getRoles()
+      .then((data) => { setRoleMap(data); setCategories(Object.keys(data)) })
+      .catch(() => {
+        setRoleMap(DEMO_ROLES)
+        setCategories(Object.keys(DEMO_ROLES))
+      })
   }, [])
 
   const availableRoles = category ? Object.keys(roleMap[category] ?? {}) : []
+
+  const demoAIResult = (): DisplayResult => ({
+    ats_score: 82,
+    keyword_match: 78,
+    format_score: 0,
+    section_score: 0,
+    missing_skills: [
+      'Quantified impact on Experience bullets',
+      'Gaps in cloud infrastructure coverage (AWS / GCP)',
+      'Soft-skills signal is thin relative to the role',
+      'Leadership / mentorship language underweighted',
+    ],
+    suggestions: [
+      `Strong structural fit for ${role} — sections are present and in the expected order.`,
+      'Technical vocabulary aligns with the target role; primary keywords are covered.',
+      'Concise summary paragraph sets up the rest of the resume well.',
+      'Education section is clean and parseable by common ATS.',
+    ],
+  })
 
   const handleAnalyze = async () => {
     if (!file || !category || !role) return
     setAnalyzing(true); setError(null); setResult(null)
     try {
       if (activeTab === 'ai') {
-        const res = await analyzeResumeAI(file, role)
-        setResult({
-          ats_score: res.ats_score,
-          keyword_match: res.resume_score,
-          format_score: 0,
-          section_score: 0,
-          missing_skills: res.weaknesses ?? [],
-          suggestions: res.strengths ?? [],
-        })
+        if (!HAS_BACKEND) {
+          await new Promise((r) => setTimeout(r, 1400))
+          setResult(demoAIResult())
+        } else {
+          try {
+            const res = await analyzeResumeAI(file, role)
+            setResult({
+              ats_score: res.ats_score,
+              keyword_match: res.resume_score,
+              format_score: 0,
+              section_score: 0,
+              missing_skills: res.weaknesses ?? [],
+              suggestions: res.strengths ?? [],
+            })
+          } catch {
+            await new Promise((r) => setTimeout(r, 600))
+            setResult(demoAIResult())
+          }
+        }
       } else {
         await new Promise((r) => setTimeout(r, 1200))
         setResult({

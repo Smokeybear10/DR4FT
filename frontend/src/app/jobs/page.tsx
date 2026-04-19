@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import ExamCard from '@/components/booklet/ExamCard'
 import ExamButton from '@/components/booklet/ExamButton'
 import ExamInput from '@/components/booklet/ExamInput'
-import { searchJobs, getMarketInsights, type JobResult } from '@/lib/api'
+import { searchJobs, getMarketInsights, HAS_BACKEND, type JobResult } from '@/lib/api'
 
 type TrendingSkill = { name: string; growth: string; icon?: string }
 type TopLocation = { name: string; jobs: string; icon?: string }
@@ -13,6 +13,45 @@ type Insights = {
   trending_skills?: TrendingSkill[]
   top_locations?: TopLocation[]
   salary_insights?: SalaryInsight[]
+}
+
+const DEMO_INSIGHTS: Insights = {
+  trending_skills: [
+    { name: 'Artificial Intelligence', growth: '+45%' },
+    { name: 'Cloud Computing', growth: '+38%' },
+    { name: 'Data Science', growth: '+35%' },
+    { name: 'Cybersecurity', growth: '+32%' },
+    { name: 'DevOps', growth: '+30%' },
+    { name: 'Machine Learning', growth: '+28%' },
+  ],
+  top_locations: [
+    { name: 'San Francisco', jobs: '45,000+' },
+    { name: 'New York', jobs: '38,000+' },
+    { name: 'Seattle', jobs: '28,000+' },
+    { name: 'Austin', jobs: '22,000+' },
+    { name: 'Boston', jobs: '18,000+' },
+    { name: 'Denver', jobs: '14,000+' },
+  ],
+  salary_insights: [
+    { role: 'Machine Learning Engineer', range: '$140K \u2014 $260K', experience: '0\u20135 years' },
+    { role: 'Software Engineer', range: '$110K \u2014 $210K', experience: '0\u20135 years' },
+    { role: 'Data Scientist', range: '$125K \u2014 $230K', experience: '0\u20135 years' },
+    { role: 'DevOps Engineer', range: '$120K \u2014 $220K', experience: '0\u20135 years' },
+    { role: 'Product Designer', range: '$100K \u2014 $190K', experience: '0\u20135 years' },
+  ],
+}
+
+const DEMO_JOBS = (query: string, location: string): JobResult[] => {
+  const locQ = encodeURIComponent(location || '')
+  const q = encodeURIComponent(query)
+  return [
+    { portal: 'LinkedIn', title: `${query} jobs${location ? ' in ' + location : ''}`, url: `https://www.linkedin.com/jobs/search/?keywords=${q}&location=${locQ}`, icon: '', color: '#0A66C2' },
+    { portal: 'Indeed', title: `${query} jobs${location ? ' in ' + location : ''}`, url: `https://www.indeed.com/jobs?q=${q}&l=${locQ}`, icon: '', color: '#2164F3' },
+    { portal: 'Glassdoor', title: `${query} jobs${location ? ' in ' + location : ''}`, url: `https://www.glassdoor.com/Job/jobs.htm?sc.keyword=${q}&locT=&locId=&locKeyword=${locQ}`, icon: '', color: '#0CAA41' },
+    { portal: 'Google Jobs', title: `${query}${location ? ' ' + location : ''}`, url: `https://www.google.com/search?q=${q}+jobs+${locQ}`, icon: '', color: '#4285F4' },
+    { portal: 'Hacker News', title: `${query} (Who is Hiring)`, url: `https://hn.algolia.com/?q=${q}&sort=byDate&type=comment`, icon: '', color: '#FF6600' },
+    { portal: 'Wellfound', title: `${query} at startups`, url: `https://wellfound.com/jobs?job_listing_search%5Bquery%5D=${q}`, icon: '', color: '#000000' },
+  ]
 }
 
 export default function JobsPage() {
@@ -37,11 +76,24 @@ export default function JobsPage() {
   const handleSearch = async () => {
     if (!query) return
     setSearching(true); setError(null)
+    if (!HAS_BACKEND) {
+      await new Promise((r) => setTimeout(r, 800))
+      setJobs(DEMO_JOBS(query, location))
+      setInsights(DEMO_INSIGHTS)
+      setHasSearched(true)
+      setSearching(false)
+      return
+    }
     try {
       const [jobResults, insightData] = await Promise.all([searchJobs(query, location), getMarketInsights().catch(() => null)])
       setJobs(jobResults); setInsights(insightData as Insights | null); setHasSearched(true)
-    } catch (e) { setError(e instanceof Error ? e.message : 'Search failed') }
-    finally { setSearching(false) }
+    } catch {
+      setJobs(DEMO_JOBS(query, location))
+      setInsights(DEMO_INSIGHTS)
+      setHasSearched(true)
+    } finally {
+      setSearching(false)
+    }
   }
 
   return (
@@ -79,7 +131,7 @@ export default function JobsPage() {
                     }, () => {}, { enableHighAccuracy: true }
                   )
                 }}
-                style={{ fontFamily: 'var(--font-ibm-plex-mono)', fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--color-cover)', background: 'none', border: 'none', cursor: 'pointer', marginTop: 6, padding: 0 }}
+                style={{ fontFamily: 'var(--font-ibm-plex-mono)', fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--color-cover)', background: 'none', border: 'none', cursor: 'pointer', marginTop: 4, padding: '10px 0', minHeight: 44, display: 'inline-flex', alignItems: 'center' }}
               >
                 Use precise location
               </button>

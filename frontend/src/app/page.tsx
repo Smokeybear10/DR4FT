@@ -168,7 +168,10 @@ export default function Home() {
 
           <h1 className="cover-title" style={{ perspective: 400, marginBottom: 4 }}>
             {titleWords.map((w, i) => (
-              <span key={i} className="cover-word" style={{ display: 'inline-block', marginRight: '0.28em' }}>{w}</span>
+              <span key={i}>
+                <span className="cover-word" style={{ display: 'inline-block', marginRight: '0.28em' }}>{w}</span>
+                {i < titleWords.length - 1 ? ' ' : ''}
+              </span>
             ))}
             <br />
             <span className="cover-word" style={{ display: 'inline-block' }}>

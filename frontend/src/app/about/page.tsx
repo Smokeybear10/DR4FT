@@ -43,7 +43,7 @@ export default function AboutPage() {
             <p style={{ fontFamily: 'var(--font-ibm-plex-mono)', fontSize: 12, color: 'var(--color-pencil)', marginBottom: 20 }}>Fullstack Engineer & Designer</p>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {SOCIAL_LINKS.map((link) => (
-                <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="btn-exam-outline" style={{ padding: '6px 14px', fontSize: 10 }}>
+                <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="btn-exam-outline" style={{ padding: '12px 18px', fontSize: 11, minHeight: 44, display: 'inline-flex', alignItems: 'center' }}>
                   {link.label}<span className="sr-only"> (opens in new tab)</span>
                 </a>
               ))}
