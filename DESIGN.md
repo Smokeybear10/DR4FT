@@ -1,99 +1,108 @@
-# Design System - DR4FT
+# Design System — DR4FT
 
 ## Product Context
-- **What this is:** AI-powered resume optimization tool with ATS analysis, keyword targeting, job search, and resume building
-- **Who it's for:** Job seekers optimizing resumes to beat ATS systems and land interviews
-- **Space/industry:** Career tech, resume builders
-- **Project type:** Next.js web app with FastAPI backend
+- **What this is:** AI-powered resume optimization tool — ATS analysis, keyword matching, job search, resume builder.
+- **Who it's for:** Job seekers fighting ATS filters.
+- **Project type:** Next.js 16 + React 19 frontend, FastAPI backend, Python NLP + Google Gemini.
 
-## Aesthetic Direction
-- **Direction:** Academic Brutalist — editorial serif meets raw data, research paper meets career tool
-- **Decoration level:** Zero ornament. Structure IS the decoration. Paper grain for texture.
-- **Mood:** Scholarly confidence. Like a well-typeset research paper with the scroll experience of igloo.inc. Instrument Serif headlines give it editorial weight. Barlow Condensed labels keep it functional. JetBrains Mono data keeps it precise.
-- **References:** R1VER (Lenis + GSAP scroll, Instrument Serif), PAINT (paper grain, editorial serif), pudding.cool (data narrative)
+## Aesthetic Direction — Blue Book Exam Booklet
+The entire product is dressed as a graded exam. The cover is a dark-blue stitched-border booklet. Interior pages are cream ruled paper with a red margin line, a binding shadow on the spine, and typewriter running heads. The user's resume **is** the exam. DR4FT is the grader — red pen annotations, PASS/FAIL stamps, percentage grades in Baskerville display.
+
+- **Direction:** Academic brutalist dressed as a college Blue Book. Editorial serif meets typewriter rigor.
+- **Decoration level:** Zero ornament. Structure IS the decoration. Paper grain and ruled lines for texture.
+- **Mood:** Studious. Slightly anxious. The pressure of an exam you might fail — and a teacher who'll tell you why.
+- **References:** A real Roaring Spring Blue Book exam booklet. Editorial magazines (The Drift, n+1). Fold Magazine's paper textures.
 - **Departures from category:**
-  1. Cream base (#F5F0EB) instead of dark mode — most career tools are dark, this stands out
-  2. Thick 2px border grid instead of cards — borders define sections, not shadows
-  3. Instrument Serif for display — academic editorial, not the typical tech sans-serif
-  4. Numbered sections (01, 02, 03) like journal chapters
-  5. Paper grain overlay for physical texture
-  6. Lenis smooth scroll + GSAP ScrollTrigger for cinematic pacing
-  7. No rounded corners anywhere — everything is 0px radius
+  1. Warm cream `#FDFBF5` paper instead of flat white — most resume tools are clinical white or dark mode.
+  2. Deep-blue cover `#0F2847` with stitched border — the product has a physical cover before it has a UI.
+  3. Libre Baskerville display — academic serif, not tech sans.
+  4. Special Elite typewriter for body text on booklet pages — reads as printed, not rendered.
+  5. Red margin line + faint ruled lines on every page — the resume is literally being graded.
+  6. Scroll-driven cover flip with GSAP ScrollTrigger — the booklet opens as you scroll.
+  7. No rounded corners anywhere. No drop shadows as decoration — only depth via box-shadow on the paper itself.
 
 ## Typography
-- **Display/Hero:** Instrument Serif (serif), weight 400, italic for emphasis
-  - Hero: clamp(72px, 10vw, 140px), line-height 1.05
-  - Section headers: clamp(40px, 5vw, 68px)
-- **Labels:** Barlow Condensed, weight 600-700, 11px, letter-spacing 0.28em, uppercase
-- **Body:** Barlow, weight 400, 15-17px, line-height 1.8
-- **Data/Numbers:** JetBrains Mono, weight 400, 11px, letter-spacing 0.05em
-- **Stat numbers:** Barlow Condensed 900, clamp(60px, 7vw, 88px)
-- **Score numbers:** Barlow Condensed 900, 72px
-- **Loading:** Google Fonts — Instrument Serif (400, italic) + Barlow Condensed (400-900) + Barlow (300-600) + JetBrains Mono (400,500)
+- **Display / Hero:** Libre Baskerville, weight 700. Italic for emphasis (e.g. "test?" on cover).
+  - Cover H1: 58px, line-height 1.05, letter-spacing -0.015em
+  - Tool-page H1: clamp(36px, 4.4vw, 56px)
+  - Section H2: clamp(28px, 3.2vw, 48px)
+- **Body / booklet pages:** Special Elite (typewriter), 14-17px, line-height 1.7. Warm ink `#1a120b` at 0.78-0.82 alpha.
+- **Labels / running heads:** IBM Plex Mono, 9-12px, letter-spacing 0.22-0.32em, uppercase.
+- **Nav / chips:** Barlow Condensed, weight 700-800, 11-16px, letter-spacing 0.14em, uppercase.
+- **Handwriting (teacher's red pen, stamps):** Caveat, italic. For grade marks, margin notes, signatures.
+- **Loading:** Google Fonts — Libre Baskerville (400/400i/700), Special Elite (400), IBM Plex Mono (400/500), Barlow Condensed (400/700/800), Caveat (400/700).
 
 ## Color
-- **Base:** `--cream: #F5F0EB` — warm off-white page background
-- **Deep cream:** `--cream-deep: #EDE8E2` — slightly darker variant for hover states
-- **Ink:** `--ink: #0D0D0B` — near-black for text and borders
-- **Saffron:** `--saffron: #E8971A` — primary accent, hero title highlight, CTA hover
-- **Danger:** `--danger: #C9321F` — low scores, missing keywords
-- **Success:** `--success: #1B6B3A` — high scores, file uploaded
-- **Text hierarchy:**
-  - Primary: `#0D0D0B` (ink)
-  - Secondary: `rgba(13, 13, 11, 0.55)`
-  - Labels: `rgba(13, 13, 11, 0.4)`
-  - Muted: `rgba(13, 13, 11, 0.25)`
-- **Light mode only.** No dark mode variant.
-- **Score tiers:** danger (< 50%) | mid (50-74%) | good (≥ 75%)
+- `--color-cover` `#1B3A6B` — booklet mid blue
+- `--color-cover-deep` `#0F2847` — booklet outside / wrapper bg
+- `--color-cover-light` `#2A4F8A` — cover highlight
+- `--color-paper` `#FDFBF5` — interior cream paper
+- `--color-paper-dim` `#F2EFE7` — paper shadow
+- `--color-ink` `#1A1A18` — near-black body
+- `--color-ink-red` `#B4242A` — teacher's red pen
+- `--color-ink-red-faded` `#983036`
+- `--color-ink-blue` `#1A3C8F` — student's ballpoint
+- `--color-yellow` `#FCD34D` — highlighter / CTA
+- `--color-yellow-bg` `rgba(252, 211, 77, 0.18)`
+- `--color-red-grade` `#B91C1C` — FAIL grade
+- `--color-green-grade` `#166534` — PASS grade
+- `--color-pencil` `#7A756D` — secondary text
+- `--color-pencil-dim` `#A8A39B` — tertiary / placeholder
+- **Text hierarchy on paper:** `#1a120b` (primary), `rgba(26,18,11,0.78)` (secondary), `rgba(26,18,11,0.55)` (labels).
+- **Light mode only.** Dark mode breaks the booklet metaphor.
 
 ## Spacing
-- **Base unit:** 4px
-- **Nav height:** 60px (CSS var: `--nav-height`)
-- **Page content:** `max-width: 1100px`, `padding: nav+48px 48px 80px`
-- **Card padding:** 28px
-- **Section padding:** 64-96px (hero), 80px (content sections)
-- **Form field gap:** 24px
+- **Base:** 4px. Most clamps resolve to 4px-aligned values at common breakpoints.
+- **Nav height:** 52px.
+- **Tool-page padding:** `clamp(56px, 6.5%, 88px)` top, `clamp(100px, 11%, 132px)` left (leaves room for red margin line), tighter on right.
+- **Booklet page padding:** matches tool-page but constrained to the book-page-frame aspect ratio.
+- **Ruled line spacing:** 35px + 1px rule (faint blue `rgba(82,120,170,0.07)`).
+- **Red margin line:** `left: clamp(76px, 9%, 108px)`.
 
 ## Layout
-- **Navigation:** Fixed top bar, 60px, 2px border-bottom solid ink. Brand left (bordered right), links right, CTA far right (ink bg, saffron hover). No blur.
-- **Grid:** CSS grid with 2px border lines as design element
-- **Border radius:** 0 everywhere
-- **Max content width:** 1100px for tool pages, 1200-1400px for home sections
-- **Hero:** 2-column grid (55/45) — headline left, stats right, all divided by 2px borders
+- **Navigation:** Fixed top bar, 52px, deep-blue `#0F2847`. Brand `DR4FT` left. Page links right. Yellow CTA far right.
+- **Tool pages (`.tool-paper`):** Cream paper floating on the deep-blue wrapper. Binding gradient on the left spine. Typewriter running head at top. Kicker + display title. Content sits above the red margin line.
+- **Booklet pages (`.book-page-inner`):** Same language, but inside the scroll-driven flipbook on the landing page.
+- **Border radius:** 0 everywhere.
+- **Max content width:** 980-1000px for tool pages. Landing booklet frame: `height: min(1100px, 96vh); aspect-ratio: 0.82;`.
 
 ## Motion
-- **Smooth scroll:** Lenis (duration 1.2, exponential easing) — handles all scroll behavior
-- **Scroll engine:** GSAP ScrollTrigger — drives all scroll-triggered animations
-- **Page-load:** `loadUp` / `loadRight` with stagger classes `.load-1` through `.load-5`
-- **Scroll reveal:** GSAP `gsap.from()` with ScrollTrigger. `data-animate="up|left|right|scale|counter"` + `data-delay="N"`. Easing: `power3.out`, duration: 0.8-0.9s
-- **Counters:** `data-animate="counter" data-count="N"` — GSAP tween from 0 to N on scroll enter
-- **Score bars:** `.score-bar-fill[data-bar="N"]` — GSAP width tween, 1.4s power3.out
-- **Hero parallax:** stat blocks drift upward at different rates during scroll (scrub: 0.6)
-- **CTA entrance:** left content slides from -60x, right from +60x on scroll enter
-- **Hover:** `transition: background 0.15s` on interactive elements
-- **Easing:** `cubic-bezier(0.22, 1, 0.36, 1)` for load, `power3.out` for scroll
+- **Smooth scroll:** Lenis (duration 1.2, exponential easing).
+- **Scroll engine:** GSAP ScrollTrigger + scrub 0.35 for the pinned booklet cover flip.
+- **Cover / page flip:** `rotationY` -180° with perspective 1800px, `power3.inOut` for the swing, brief `power2.out` lift. Reveal shadow sweeps across the revealed page and clears before the flip lands.
+- **Page loads:** staggered `from()` tweens on cover elements (tag, words, sub, lines, CTA, meta).
+- **Reduced motion:** `prefers-reduced-motion: reduce` short-circuits all GSAP setup.
 
 ## UI Patterns
-- **Brut card:** `background: #FAF7F2, border: 1px solid rgba(13,13,11,0.12), padding: 28px`. Title as `.brut-card-title`. Hover: background darkens slightly.
-- **Brut button (filled):** `background: #0D0D0B, border: 2px solid #0D0D0B, color: cream`. Hover: saffron bg + ink text.
-- **Brut button (outline):** `background: transparent, border: 2px solid rgba(13,13,11,0.3)`. Hover: full border opacity + subtle bg.
-- **Brut input:** `border-bottom: 2px solid rgba(13,13,11,0.15)` only, no other borders. Focus: ink color.
-- **Brut select:** Same as input + custom chevron SVG.
-- **Score display:** Label (label-caps) → big number (72px, colored) → 3px bar track + animated fill.
-- **Tags:** `border: 2px solid` + Barlow Condensed 700 12px uppercase. Danger variant: red border/text.
-- **Upload zone:** `border: 2px dashed` — solid when file present (success color).
-- **Page headers:** `border-bottom: 2px solid ink`, kicker label + big stacked title.
-- **Tabs:** `border-bottom: 3px solid` active indicator on a 2px base line.
+- **Tool paper:** Cream `.tool-paper` with `.tool-binding` child + `.tool-running-head` + `.tool-header` (kicker + `.tool-header-title`). Ruled lines via `::before`, red margin via `::after`.
+- **Running head:** Typewriter, uppercase, 9-11px, 0.22em letter-spacing, dashed underline. Left: `DR4FT · <section>`. Right: `Section X · <phase>`.
+- **Kicker (`.product-eyebrow` / `.tool-header-kicker`):** Typewriter, all-caps, 0.32em letter-spacing, 1.5px solid underline, align-self flex-start.
+- **Product headline:** Libre Baskerville 700, -0.015em letter-spacing, subtle 0.35px ink-bleed text-shadow.
+- **Bullet list (`.product-bullets`):** Typewriter body, em-dash in red serif as bullet.
+- **Rubric table (`.product-rubric-table`):** Ink-colored 2px top border, thin row dividers, serif title + typewriter body + big red Baskerville weight on the right.
+- **Stamp (`.stamp-block`):** Red border box rotated -4°, typewriter text. Used for PASS/FAIL and final grade.
+- **Score mark (`.exam-score-mark`):** Caveat red pen, rotated -3°, with an underline of red ink.
+- **Grade display (`.exam-final-grade`):** Caveat, weight 700, 96-180px, rotated -3°.
+- **Market insights (`.market-insights`):** Booklet panel under the job listings. Typewriter section labels, serif names, red ink weights/ranges.
+
+## Anti-patterns (AI slop blacklist)
+Do not introduce:
+- Purple / indigo gradient backgrounds.
+- Icon-in-colored-circle + title + description grids (the signature AI SaaS layout).
+- Decorative blobs, wavy dividers, floating shapes.
+- Centered everything.
+- Uniform bubbly border-radius.
+- Emoji as design elements.
+- Generic hero copy ("Welcome to…", "Unlock the power of…", "Your all-in-one…").
+- `border-left: 3px solid <accent>` cards.
 
 ## Decisions Log
 | Date | Decision | Rationale |
 |------|----------|-----------|
-| 2026-04-01 | Terminal Mode selected | User chose after reviewing 3 options. |
-| 2026-04-02 | Terminal Mode rejected | User said "I don't like the terminal design." |
-| 2026-04-02 | Monogram Minimal selected | User chose Option A (V3RSUS-inspired) from 3 new design options. |
-| 2026-04-02 | Full frontend rebuild | All pages, components, and CSS rebuilt with Monogram Minimal. |
-| 2026-04-02 | Renamed to DR4FT | Product renamed from SmartCV to DR4FT. |
-| 2026-04-09 | Warm Brutalist selected | User chose Option C from /design-shotgun. Complete rebuild — discard Monogram Minimal. |
-| 2026-04-09 | Scroll animations added | Lenis smooth scroll + GSAP ScrollTrigger. Same stack as R1VER. |
-| 2026-04-09 | Academic editorial direction | Instrument Serif display, JetBrains Mono data, paper grain, numbered sections. |
-| 2026-04-09 | Light mode palette | Cream base — deliberate break from dark-mode-heavy category. |
+| 2026-04-01 | Terminal Mode | First direction, rejected. |
+| 2026-04-02 | Monogram Minimal | V3RSUS-inspired; then renamed to DR4FT. |
+| 2026-04-09 | Warm Brutalist | Instrument Serif + cream #F5F0EB. |
+| 2026-04-18 | **Blue Book Exam Booklet** | Current direction. Entire product dressed as a graded exam — cover, ruled pages, red pen, typewriter body, grade stamps. |
+| 2026-04-18 | Libre Baskerville + Special Elite + Caveat | Typography swap away from Instrument Serif to a more booklet-native stack. |
+| 2026-04-18 | Scroll-driven booklet flip on landing | GSAP ScrollTrigger + perspective transform; cover physically opens. |
+| 2026-04-19 | Tool pages adopt booklet treatment | `/analyzer`, `/builder`, `/jobs`, `/about` all get cream paper + binding + running head + red margin. |
